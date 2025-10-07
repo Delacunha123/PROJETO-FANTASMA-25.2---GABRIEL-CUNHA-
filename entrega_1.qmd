@@ -31,9 +31,9 @@ Esse template foi criado para o alocado conseguir observar como ficaria sua aná
 ## Análise 2
 
 ```{r}
-#| label: fig-
+#| label: fig-graf1
 #| fig-cap: "Gráfico "
-
+grafico1
 
 
 ```
