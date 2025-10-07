@@ -33,6 +33,21 @@ RELATORIO_VENDAS <- read_excel("C:/Users/gabic/OneDrive/Documentos/relatorio_old
 INFO_PROD <- read_excel("C:/Users/gabic/OneDrive/Documentos/relatorio_old_town_road.xlsx",sheet = "infos_produtos")
 INFO_VENDAS <- read_excel("C:/Users/gabic/OneDrive/Documentos/relatorio_old_town_road.xlsx",sheet = "infos_vendas")
 
+#TEMA ESTAT()
+theme_estat <- function(...) {
+  theme <- ggplot2::theme_bw() +
+    ggplot2::theme(
+      axis.title.y = ggplot2::element_text(colour = "black", size = 12),
+      axis.title.x = ggplot2::element_text(colour = "black", size = 12),
+      axis.text = ggplot2::element_text(colour = "black", size = 9.5),
+      panel.border = ggplot2::element_blank(),
+      axis.line = ggplot2::element_line(colour = "black"),
+      legend.position = "top",
+      ...
+    )
+  return(theme)
+}
+
 
 #JUNTAR AS TABELAS 
 DF <- RELATORIO_VENDAS %>% 
@@ -52,4 +67,35 @@ Dados_analise_1 <- DF %>%
     `NOME DO PRODUTO`  = NameProduct,
     `PRECOUNITARIODOLAR`   = UnityPrice
   )
+
+#CONVERTER O PREÇO UNITÁRIO PARA REAIS E CALCULAR VENDA
+DOLAR <- 5.31
+
+DADOS_ATUALIZADO_ANALISE_1 <- Dados_analise_1 %>%
+  mutate(
+    PREÇO_UNITÁRIO_BRL = DOLAR * `PRECOUNITARIODOLAR`,
+    VENDAS_EM_REAIS = `QUANTIDADE VENDIDA` * PREÇO_UNITÁRIO_BRL
+  )
+#ADICIONAR O ANO DE VENDA E VER FATURAMENTO TOTAL DE CADA ANO E CADA LOJA
+FATURAMENTO_ANUAL_por_loja_ano <- DADOS_ATUALIZADO_ANALISE_1 %>%
+  mutate(ANO = year(as.Date(DATA))) %>%
+  group_by(`CHAVE DA LOJA`, ANO) %>%
+  summarise(Faturamento_anual = sum(VENDAS_EM_REAIS, na.rm = TRUE), .groups = "drop")
+#CALCULAR FATURAMENTO MÉDIO POR ANO
+FATURAMENTO_MÉDIO_POR_ANO <- FATURAMENTO_ANUAL_por_loja_ano %>%
+  group_by(ANO) %>%
+  summarise(
+    soma_faturamento = sum(Faturamento_anual, na.rm = TRUE),
+    numero_lojas = n_distinct(`CHAVE DA LOJA`),
+    faturamento_medio = soma_faturamento / numero_lojas) %>%
+  select(ANO,faturamento_medio)
+#FAZENDO CRIAÇÃO DO GRÁFICO DE DISPERSÃO COM LINHAS PARA MELHOR VISUALIZAÇÃO DO FATURAMENTO MÉDIO DAS LOJAS POR ANO
+ggplot(FATURAMENTO_MÉDIO_POR_ANO) +
+  aes(x = ANO, y = faturamento_medio, group = 1) +
+  geom_line(size = 1, colour = "#A11D21") +
+  geom_point(colour = "#A11D21", size = 2) +
+  scale_x_continuous(breaks = seq(min(FATURAMENTO_MÉDIO_POR_ANO$ANO),
+                                  max(FATURAMENTO_MÉDIO_POR_ANO$ANO), 1)) +
+  labs(x = "Ano", y = "Faturamento médio das lojas") +
+  theme_estat()
 
