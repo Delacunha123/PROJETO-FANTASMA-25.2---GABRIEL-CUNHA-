@@ -4,71 +4,72 @@ output-file: "Entrega 1"
 ---
 
 ```{r setup}
-#| include: false
 source("rdocs/entrega_1.R")
 ```
 
 ```{r}
-# Rodar apenas uma vez na vida!
-## Instalando o tinytex(pacote apenas)
-### CRAN version
-install.packages('tinytex')
-
-
 ## Baixando o tinytex
 library(tinytex)
-tinytex::install_tinytex()
 ```
 
-# Objetivo
-
-Esse template foi criado para o alocado conseguir observar como ficaria sua análise o arquivo principal. É daqui que o gerente de projetos irá copiar a análise e inserir no documento principal que gerará o relatório estatístico.
-
+# Introdução
+  Este relatório apresenta as análises realizadas sobre o cliente João Sábio proprietário da Old Town Road.Ltda , com o objetivo de identificar padrões , propor melhorias e fornecer insights baseados em dados. As análises foram divididas em quatro etapas , cada uma abordando um aspecto específico dos dados fornecidos.
+  
 # Análises
 
-## Análise 1
+##  Receita média total das lojas (1880-1889)
 
-## Análise 2
+  Nesta análise , buscamos compreender como evoluiu a **receita média total das lojas** entre os anos de **1880 e 1889**. Os valores estão expressos em **reais(R$)**, considerando a cotação de **1 Dólar = R$5,31**. Abaixo é representada uma **Tabela descritiva** com medidas estatísticas das receitas no período analisado:
 
+::: {#tbl-faturamento_ano layout-align="center" tbl-pos="H"}
+```{=latex}
+\begin{table}[!h]
+\centering
+\caption{Faturamento médio por ano}
+\centering
+\begin{tabular}[t]{cr}
+\toprule
+Ano & Faturamento Médio (R\$)\\
+\midrule
+1880 & 105399.0\\
+1881 & 112110.0\\
+1882 & 112452.4\\
+1883 & 116856.9\\
+1884 & 119989.8\\
+\addlinespace
+1885 & 129969.0\\
+1886 & 130989.2\\
+1887 & 135444.8\\
+1888 & 133757.6\\
+1889 & 155009.1\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+```
+
+
+:::
+
+  Como mostrado na  @tbl-faturamento_ano , as receitas médias variaram entre **R$105.399,00 e R$155.009,10**, com uma tendência de crescimento ao longo da década.
+  
 ```{r}
-#| label: fig-graf1
-#| fig-cap: "Gráfico "
-grafico1
+#| label: fig-faturamento_ano
+#| tbl-cap: "Faturamento médio por ano"
 
-
+ANÁLISE_1
 ```
 
 
-::: {#quad- layout-align="center" quad-pos="H"}
-```{=latex}
 
-
-
-```
-
-Medidas resumo da 
-:::
-
-
-
-::: {#tbl-modalidades layout-align="center" tbl-pos="H"}
-```{=latex}
-
-
-```
-
-
-:::
+  Como mostrado na @fig-faturamento_ano , observa-se um **crescimento contínuo da receita média das lojas** ao longo dos anos, com pequenas oscilações em 1887-1888 mas tendência de crescimento geral positiva.
+  
+### Interpretação dos resultados da Receita média total das lojas (1880-1889)
+  A análise descritiva evidencia um *aumento* na receita média total das lojas entre 1880 e 1889. Esse crescimento constante indica **expansão do setor** e aumento da lucratividade das lojas ao longo das décadas.
 
 
 
 
-$\ref{fig-}$
-
-[@tbl-]
-
-
-[**Quadro** @quad-]
 
 
 

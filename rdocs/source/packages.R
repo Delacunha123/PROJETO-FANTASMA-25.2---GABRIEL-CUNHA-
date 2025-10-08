@@ -3,7 +3,7 @@ if (!require("pacman")) install.packages("pacman")
 pacman::p_load(
   tidyverse, data.table, pROC,
   readxl, readr, ggcorrplot, cowplot,
-  RColorBrewer, scales, nortest, xlsx,
+  RColorBrewer, scales, nortest, #xlsx,
   skimr, xtable, geobr, sf, ggrepel,
   abjutils, grDevices, wordcloud
 )

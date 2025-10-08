@@ -33,20 +33,8 @@ RELATORIO_VENDAS <- read_excel("C:/Users/gabic/OneDrive/Documentos/relatorio_old
 INFO_PROD <- read_excel("C:/Users/gabic/OneDrive/Documentos/relatorio_old_town_road.xlsx",sheet = "infos_produtos")
 INFO_VENDAS <- read_excel("C:/Users/gabic/OneDrive/Documentos/relatorio_old_town_road.xlsx",sheet = "infos_vendas")
 
-#TEMA ESTAT()
-theme_estat <- function(...) {
-  theme <- ggplot2::theme_bw() +
-    ggplot2::theme(
-      axis.title.y = ggplot2::element_text(colour = "black", size = 12),
-      axis.title.x = ggplot2::element_text(colour = "black", size = 12),
-      axis.text = ggplot2::element_text(colour = "black", size = 9.5),
-      panel.border = ggplot2::element_blank(),
-      axis.line = ggplot2::element_line(colour = "black"),
-      legend.position = "top",
-      ...
-    )
-  return(theme)
-}
+
+
 
 
 #JUNTAR AS TABELAS 
@@ -90,7 +78,7 @@ FATURAMENTO_MÉDIO_POR_ANO <- FATURAMENTO_ANUAL_por_loja_ano %>%
     faturamento_medio = soma_faturamento / numero_lojas) %>%
   select(ANO,faturamento_medio)
 #FAZENDO CRIAÇÃO DO GRÁFICO DE DISPERSÃO COM LINHAS PARA MELHOR VISUALIZAÇÃO DO FATURAMENTO MÉDIO DAS LOJAS POR ANO
-ggplot(FATURAMENTO_MÉDIO_POR_ANO) +
+ANÁLISE_1 <- ggplot(FATURAMENTO_MÉDIO_POR_ANO) +
   aes(x = ANO, y = faturamento_medio, group = 1) +
   geom_line(size = 1, colour = "#A11D21") +
   geom_point(colour = "#A11D21", size = 2) +
@@ -99,3 +87,18 @@ ggplot(FATURAMENTO_MÉDIO_POR_ANO) +
   labs(x = "Ano", y = "Faturamento médio das lojas") +
   theme_estat()
 
+library(tidyverse)
+library(knitr)
+library(dplyr)
+library(kableExtra)
+
+#GERAR TABELA EM LATEX
+FATURAMENTO_MÉDIO_POR_ANO %>%
+  kable(
+    col.names = c("Ano", "Faturamento Médio (R$)"),
+    align = c("c", "r"),      # ok
+    format = "latex",
+    booktabs = TRUE,
+    caption = "Faturamento médio por ano"  # coloque a legenda aqui (ou use #| tbl-cap:)
+  ) %>%
+  kable_styling(latex_options = c("hold_position"))
