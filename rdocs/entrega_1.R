@@ -87,6 +87,7 @@ ANÁLISE_1 <- ggplot(FATURAMENTO_MÉDIO_POR_ANO) +
   labs(x = "Ano", y = "Faturamento médio das lojas") +
   theme_estat()
 
+
 library(tidyverse)
 library(knitr)
 library(dplyr)
@@ -98,7 +99,6 @@ FATURAMENTO_MÉDIO_POR_ANO %>%
     col.names = c("Ano", "Faturamento Médio (R$)"),
     align = c("c", "r"),      # ok
     format = "latex",
-    booktabs = TRUE,
-    caption = "Faturamento médio por ano"  # coloque a legenda aqui (ou use #| tbl-cap:)
   ) %>%
   kable_styling(latex_options = c("hold_position"))
+

@@ -13,13 +13,29 @@ library(tinytex)
 ```
 
 # Introdução
-  Este relatório apresenta as análises realizadas sobre o cliente João Sábio proprietário da Old Town Road.Ltda , com o objetivo de identificar padrões , propor melhorias e fornecer insights baseados em dados. As análises foram divididas em quatro etapas , cada uma abordando um aspecto específico dos dados fornecidos.
-  
+
+Este relatório apresenta as análises realizadas sobre o cliente João Sábio proprietário da Old Town Road.Ltda , com o objetivo de identificar padrões , propor melhorias e fornecer insights baseados em dados. As análises foram divididas em quatro etapas , cada uma abordando um aspecto específico dos dados fornecidos.
+
 # Análises
 
-##  Receita média total das lojas (1880-1889)
+## Receita média total das lojas (1880-1889)
 
-  Nesta análise , buscamos compreender como evoluiu a **receita média total das lojas** entre os anos de **1880 e 1889**. Os valores estão expressos em **reais(R$)**, considerando a cotação de **1 Dólar = R$5,31**. Abaixo é representada uma **Tabela descritiva** com medidas estatísticas das receitas no período analisado:
+Nesta análise, busca-se compreender a **evolução da receita média total das lojas** entre os anos de 1880 e 1889. Os valores estão expressos em reais , considerando a cotação de **1 dólar = R\$5,31**.
+
+Foram utilizadas as seguintes variáveis:
+
+**Faturamento médio das lojas**: variável quantitativa contínua, obtida pela soma do faturamento total anual de cada loja (quantidade vendida × preço unitário em reais), dividida pelo número de lojas ativas em cada ano. Essa medida permite avaliar o desempenho médio das lojas ao longo do período analisado.
+
+**Ano**: variável qualitativa ordinal, que indica o período de referência das observações.
+
+Abaixo é apresentada um gráfico e uma tabela com medidas estatísticas das receitas no período analisado:
+
+```{r}
+#| label: faturamento_ano
+#| fig-cap: "Gráfico de faturamento médio das lojas por ano"
+
+ANÁLISE_1
+```
 
 ::: {#tbl-faturamento_ano layout-align="center" tbl-pos="H"}
 ```{=latex}
@@ -45,37 +61,11 @@ Ano & Faturamento Médio (R\$)\\
 \bottomrule
 \end{tabular}
 \end{table}
-
 ```
-
-
 :::
 
-  Como mostrado na  @tbl-faturamento_ano , as receitas médias variaram entre **R$105.399,00 e R$155.009,10**, com uma tendência de crescimento ao longo da década.
-  
-```{r}
-#| label: fig-faturamento_ano
-#| tbl-cap: "Faturamento médio por ano"
+Como mostrado na REFTABLE1 e na REFFIG1, as receitas médias variaram entre **R\$105.399,00 e R\$155.009,10**, com uma tendência de crescimento ao longo da década. Observa-se um **crescimento contínuo da receita média das lojas** ao longo dos anos, com pequenas oscilações em 1887-1888 mas tendência de crescimento geral positiva.
 
-ANÁLISE_1
-```
-
-
-
-  Como mostrado na @fig-faturamento_ano , observa-se um **crescimento contínuo da receita média das lojas** ao longo dos anos, com pequenas oscilações em 1887-1888 mas tendência de crescimento geral positiva.
-  
 ### Interpretação dos resultados da Receita média total das lojas (1880-1889)
-  A análise descritiva evidencia um *aumento* na receita média total das lojas entre 1880 e 1889. Esse crescimento constante indica **expansão do setor** e aumento da lucratividade das lojas ao longo das décadas.
 
-
-
-
-
-
-
-
-
-
-
-
-
+A análise descritiva evidencia um *aumento* na receita média total das lojas entre 1880 e 1889. Esse crescimento constante indica **expansão do setor** e aumento da lucratividade das lojas ao longo das décadas.

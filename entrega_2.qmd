@@ -4,74 +4,126 @@ output-file: "Entrega 2"
 ---
 
 ```{r setup}
-#| include: false
+source("rdocs/entrega_1.R")
 source("rdocs/entrega_2.R")
-```
 
+
+```
 
 ```{r}
-# Rodar apenas uma vez na vida!
-## Instalando o tinytex(pacote apenas)
-### CRAN version
-install.packages('tinytex')
-
-
 ## Baixando o tinytex
 library(tinytex)
-tinytex::install_tinytex()
+library(dplyr)
+library(readxl)
+library(lubridate)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+
 ```
 
-# Objetivo
+# Introdução
 
-Esse template foi criado para o alocado conseguir observar como ficaria sua análise o arquivo principal. É daqui que o gerente de projetos irá copiar a análise e inserir no documento principal que gerará o relatório estatístico.
+Este relatório apresenta as análises realizadas sobre o cliente João Sábio proprietário da Old Town Road.Ltda , com o objetivo de identificar padrões , propor melhorias e fornecer insights baseados em dados. As análises foram divididas em quatro etapas , cada uma abordando um aspecto específico dos dados fornecidos.
 
 # Análises
 
-## Análise 3
+## Receita média total das lojas (1880-1889)
 
-## Análise 4
+Nesta análise, busca-se compreender a **evolução da receita média total das lojas** entre os anos de 1880 e 1889. Os valores estão expressos em reais , considerando a cotação de **1 dólar = R\$5,31**.
+
+Foram utilizadas as seguintes variáveis:
+
+**Faturamento médio das lojas**: variável quantitativa contínua, obtida pela soma do faturamento total anual de cada loja (quantidade vendida × preço unitário em reais), dividida pelo número de lojas ativas em cada ano. Essa medida permite avaliar o desempenho médio das lojas ao longo do período analisado.
+
+**Ano**: variável qualitativa ordinal, que indica o período de referência das observações.
+
+Abaixo é apresentada um gráfico e uma tabela com medidas estatísticas das receitas no período analisado:
 
 ```{r}
-#| label: fig-
-#| fig-cap: "Gráfico "
+#| label: faturamento_ano
+#| fig-cap: "Gráfico de faturamento médio das lojas por ano"
 
-
-
+ANÁLISE_1
 ```
 
-
-::: {#quad- layout-align="center" quad-pos="H"}
+::: {#tbl-faturamento_ano layout-align="center" tbl-pos="H"}
 ```{=latex}
-
-
-
+\begin{table}[!h]
+\centering
+\centering
+\begin{tabular}[t]{cr}
+\toprule
+Ano & Faturamento Médio (R\$)\\
+\midrule
+1880 & 105399.0\\
+1881 & 112110.0\\
+1882 & 112452.4\\
+1883 & 116856.9\\
+1884 & 119989.8\\
+\addlinespace
+1885 & 129969.0\\
+1886 & 130989.2\\
+1887 & 135444.8\\
+1888 & 133757.6\\
+1889 & 155009.1\\
+\bottomrule
+\end{tabular}
+\end{table}
 ```
-
-Medidas resumo da 
 :::
 
+Como mostrado na **Figura 1** e na [@tbl-faturamento_ano], as receitas médias variaram entre **R\$105.399,00 e R\$155.009,10**, com uma tendência de crescimento ao longo da década. Observa-se um **crescimento contínuo da receita média das lojas** ao longo dos anos, com pequenas oscilações em 1887-1888 mas tendência de crescimento geral positiva.
 
+### Interpretação dos resultados da Receita média total das lojas (1880-1889)
 
-::: {#tbl-modalidades layout-align="center" tbl-pos="H"}
-```{=latex}
+A análise descritiva evidencia um *aumento* na receita média total das lojas entre 1880 e 1889. Esse crescimento constante indica **expansão do setor** e aumento da lucratividade das lojas ao longo das décadas.
 
+## Variação Peso por Altura
 
+Nesta análise, busca-se compreender a relação entre o peso (em quilogramas) e a altura (em centímetros) dos clientes. O objetivo é verificar se há uma associação estatisticamente significativa entre essas variáveis — isto é, se indivíduos com maior peso tendem a apresentar maior altura, ou se não existe uma relação consistente entre elas.
+
+Foram utilizadas as seguintes variáveis:
+
+**Peso (kg)**: variável quantitativa contínua, obtida a partir da conversão dos valores originalmente em libras para quilogramas, utilizando a equivalência 1 libra = 0,453592 kg.
+
+**Altura (cm)**: variável quantitativa contínua, obtida pela conversão de decímetros para centímetros, considerando 1 dm = 10 cm.
+
+Abaixo é apresentada um **gráfico de dispersão** e uma **tabela com os determinados testes de hipóteses utilizados** das variáveis Altura(cm) e Peso(KG) :
+
+```{r}
+#| label: fig-AlturaxPeso
+#| fig-cap: "Gráfico de relação entre Peso e Altura dos clientes"
+
+ANALISE_2
 ```
 
-
+::: {#tbl-PesoxAltura layout-align="center" tbl-pos="H"}
+```{=latex}
+\begin{table}[!h]
+\centering
+\begin{tabular}{lccrrl}
+\toprule
+Teste & Variável & Estatística & p-valor & Decisão & Interpretação\\
+\midrule
+Shapiro-Wilk & Peso (Kg) & 0,9981 & 0,023143 & Rejeita H0 & Não segue normalidade\\
+Shapiro-Wilk & Altura (cm) & 0,9954 & 0,000008 & Rejeita H0 & Não segue normalidade\\
+Spearman & Peso × Altura & 0,6865 & 0,000000 & Rejeita H0 & Correlação significativa\\
+\bottomrule
+\end{tabular}
+\end{table}
+```
 :::
 
-
-
-
-$\ref{fig-}$
-
-[@tbl-]
-
-
-[**Quadro** @quad-]
+Como mostrado na $\ref{fig-AlturaxPeso}$ e na [@tbl-PesoxAltura], observa-se uma relação positiva entre as variáveis Altura (cm) e Peso (Kg) dos clientes. O gráfico de dispersão indica que, de forma geral, à medida que o peso aumenta, a altura também tende a aumentar, evidenciando uma tendência linear crescente. A Tabela 2 reforça essa observação com os resultados dos testes de hipótese.Os testes de Shapiro-Wilk aplicados às variáveis individuais indicam que tanto Peso (p = 0,023143) quanto Altura (p \< 0,00001) não seguem uma distribuição normal, pois ambos rejeitam a hipótese **nula** de normalidade.Diante disso, foi utilizado o teste de correlação de Spearman, que é apropriado para dados não paramétricos. O teste revelou uma correlação positiva significativa entre Peso e Altura (ρ = 0,6865, p \< 0,000001), indicando que existe uma associação estatisticamente relevante entre essas duas variáveis.
 
 
 
 
 
+
+
+
+### Interpretação dos resultados da variação Peso por Altura
+
+A análise estatística e visual evidencia uma correlação positiva significativa entre Peso e Altura dos clientes, ainda que ambas as variáveis não apresentem distribuição normal. Isso indica que indivíduos com maior peso tendem, em média, a apresentar maior estatura.
