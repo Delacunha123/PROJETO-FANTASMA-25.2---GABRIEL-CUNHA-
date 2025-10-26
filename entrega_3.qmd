@@ -9,71 +9,43 @@ source("rdocs/entrega_3.R")
 ```
 
 ```{r}
-# Rodar apenas uma vez na vida!
-## Instalando o tinytex(pacote apenas)
-### CRAN version
-install.packages('tinytex')
-
-
 ## Baixando o tinytex
 library(tinytex)
-tinytex::install_tinytex()
 ```
 
+##  Distribuição das Idades dos Clientes por Loja — Âmbar Seco (26/10)
 
+Nesta análise, busca-se compreender a distribuição das idades dos clientes nas quatro lojas da cidade de Âmbar Seco: Ferraria Seca, Saloon, Banco Careca e Vendinha Rápida.
+O objetivo é identificar padrões etários entre os consumidores, avaliando se há diferenças significativas no perfil de idade dos clientes que frequentam cada estabelecimento.
 
+Foram utilizadas as seguintes variáveis:
 
-# Objetivo
+**Idade**: variável quantitativa contínua, representando a idade dos clientes (em anos).
 
-Esse template foi criado para o alocado conseguir observar como ficaria sua análise o arquivo principal. É daqui que o gerente de projetos irá copiar a análise e inserir no documento principal que gerará o relatório estatístico.
+**Loja**: variável qualitativa nominal, correspondente ao nome da loja na qual a venda foi registrada.
 
-# Análises
+Abaixo, é apresentado o gráfico boxplot que demonstra a dispersão das idades em cada loja:
 
-## Análise 5
-
-## Análise 6
 
 ```{r}
-#| label: fig-
-#| fig-cap: "Gráfico "
-
-
-
-```
-
-
-::: {#quad- layout-align="center" quad-pos="H"}
-```{=latex}
-
+#| label: fig-IDADE_LOJA
+#| fig-cap: "Distribuição das Idades dos Clientes por Loja - Âmbar Seco  "
+GRAFICO_3
 
 
 ```
 
-Medidas resumo da 
-:::
+A Figura $\ref{fig-IDADE_LOJA}$ apresenta o comportamento da idade dos clientes em cada loja da cidade de Âmbar Seco.
+De modo geral, observa-se que:
 
+A **Ferraria Seca** e o **Saloon** apresentam uma maior dispersão de idades, com clientes variando amplamente entre jovens e idosos, evidenciada pela maior amplitude interquartil e presença de outliers (valores aberrantes).
 
+A loja **Banco Careca** mostra um perfil mais concentrado, com mediana próxima dos 35 anos, indicando um público predominantemente adulto jovem.
 
-::: {#tbl-modalidades layout-align="center" tbl-pos="H"}
-```{=latex}
+Já a **Vendinha Rápida** possui a maior mediana de idade entre as lojas analisadas (cerca de 40 anos), sugerindo que atrai um público ligeiramente mais velho, possivelmente em razão do tipo de produto ou da localização.
 
+Os pontos brancos dentro das caixas representam a **média etária dos clientes em cada loja**. Nota-se que, nas quatro lojas, a média e a mediana estão próximas, o que indica distribuições aproximadamente simétricas de idade. No entanto, a presença de outliers (valores acima de 70 ou 80 anos) demonstra que algumas lojas, como a **Ferraria Seca** e o **Saloon**, atendem também a clientes significativamente mais velhos.
 
-```
-
-
-:::
-
-
-
-
-$\ref{fig-}$
-
-[@tbl-]
-
-
-[**Quadro** @quad-]
-
-
-
-
-
+A análise das idades por loja revela diferenças sutis, mas relevantes no perfil dos consumidores da cidade de Âmbar Seco.
+Enquanto lojas como o **Banco Careca** concentram-se em um público mais jovem, **Vendinha Rápida** demonstra apelo junto a clientes mais experientes.
+Esses resultados podem ser úteis para orientar estratégias de marketing, definição de venda produtos e até mesmo ajustes na comunicação com o público-alvo de cada loja, contribuindo para um **melhor posicionamento** no mercado local.
