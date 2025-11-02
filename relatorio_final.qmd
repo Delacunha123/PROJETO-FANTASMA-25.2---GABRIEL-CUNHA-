@@ -2,18 +2,229 @@
 title: "Modelo Projeto - Quarto"
 
 # Nome do documento PDF gerado
-output-file: titulo do projeto
+output-file: "ENTREGA PARCIAL"
 ---
 
+```{r setup}
+source("rdocs/entrega_1.R")
+source("rdocs/entrega_2.R")
+source("rdocs/entrega_3.R")
+source("rdocs/entrega_4.R")
+
+
+```
+
 ```{r}
-#| include: false
-source("rdocs/packages.R")
+## Baixando o tinytex
+library(tinytex)
+library(dplyr)
+library(readxl)
+library(lubridate)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+
 ```
 
 # Introdução
 
+Este relatório apresenta as análises realizadas para o cliente **João Sábio**, proprietário da empresa **Old Town Road Ltda.**, com o objetivo de identificar padrões, propor melhorias e gerar insights baseados em dados.
+As investigações foram organizadas em quatro etapas principais, cada uma abordando um aspecto específico do conjunto de dados disponibilizado, a fim de oferecer uma compreensão ampla sobre o desempenho das lojas e o perfil de seus clientes ao longo do período analisado.
+
 # Referencial Teórico
+O presente referencial teórico tem como objetivo apresentar os conceitos estatísticos e metodológicos utilizados nas análises realizadas, fornecendo o embasamento necessário para a compreensão dos resultados obtidos.
+Foram utilizadas medidas de *tendência central* (média e mediana) e dispersão (desvio-padrão, amplitude e intervalo interquartil) para descrever o comportamento das variáveis quantitativas, como idade e faturamento.
+Essas medidas permitem resumir o conjunto de dados e identificar padrões de concentração e variabilidade.
+Para avaliar a relação entre peso e altura, empregou-se a inferência estatística, utilizando o nível de significância de 5% (α = 0,05) como critério para tomada de decisão.
+As análises foram complementadas por meio de gráficos de barras,dispersão,linhas e boxplots, elaborados com o software R, com o intuito de facilitar a interpretação dos resultados e evidenciar diferenças entre grupos de forma visual.
+Assim, os conceitos de estatística descritiva e inferencial, aliados à análise temporal e à visualização gráfica, servem como base teórica para a interpretação dos resultados apresentados nas seções seguintes deste relatório.
+
 
 # Análises
 
-# Conclusões
+## Receita média total das lojas (1880-1889)
+
+Nesta análise, busca-se compreender a **evolução da receita média total das lojas** entre os anos de 1880 e 1889. Os valores estão expressos em reais , considerando a cotação de **1 dólar = R\$5,31**.
+
+Foram utilizadas as seguintes variáveis:
+
+**Faturamento médio das lojas**: variável quantitativa contínua, obtida pela soma do faturamento total anual de cada loja (quantidade vendida × preço unitário em reais), dividida pelo número de lojas ativas em cada ano. Essa medida permite avaliar o desempenho médio das lojas ao longo do período analisado.
+
+**Ano**: variável qualitativa ordinal, que indica o período de referência das observações.
+
+Abaixo é apresentada um gráfico e uma tabela com medidas estatísticas das receitas no período analisado:
+
+```{r}
+#| label: faturamento_ano
+#| fig-cap: "Gráfico de faturamento médio das lojas por ano"
+
+ANÁLISE_1
+```
+
+::: {#tbl-faturamento_ano layout-align="center" tbl-pos="H"}
+```{=latex}
+\begin{table}[!h]
+\centering
+\centering
+\begin{tabular}[t]{cr}
+\toprule
+Ano & Faturamento Médio (R\$)\\
+\midrule
+1880 & 105399.0\\
+1881 & 112110.0\\
+1882 & 112452.4\\
+1883 & 116856.9\\
+1884 & 119989.8\\
+\addlinespace
+1885 & 129969.0\\
+1886 & 130989.2\\
+1887 & 135444.8\\
+1888 & 133757.6\\
+1889 & 155009.1\\
+\bottomrule
+\end{tabular}
+\end{table}
+```
+:::
+
+Como mostrado na **Figura 1** e na [@tbl-faturamento_ano], as receitas médias variaram entre **R\$105.399,00 e R\$155.009,10**, com uma tendência de crescimento ao longo da década. Observa-se um **crescimento contínuo da receita média das lojas** ao longo dos anos, com pequenas oscilações em 1887-1888 mas tendência de crescimento geral positiva. A análise descritiva evidencia um *aumento* na receita média total das lojas entre 1880 e 1889.
+
+## Variação Peso por Altura
+
+Nesta análise, busca-se compreender a relação entre o peso **(em quilogramas)** e a altura **(em centímetros)** dos clientes. O objetivo é verificar se há uma associação estatisticamente significativa entre essas variáveis — isto é, se indivíduos com maior peso tendem a apresentar maior altura ou se não existe uma relação consistente entre elas.
+
+Antes da aplicação dos testes de correlação, foi avaliada a normalidade dos dados utilizando o teste de **Shapiro–Wilk**. Os resultados indicaram que tanto a variável Peso quanto a variável Altura não seguem uma distribuição normal. Diante disso, optou-se pela utilização de um teste não paramétrico, o teste de **correlação de Spearman**, adequado para esse tipo de dado e considerando um nível de confiança de 95%.
+
+Foram utilizadas as seguintes variáveis:
+
+**Peso (kg)**: variável quantitativa contínua, obtida a partir da conversão dos valores originais em libras para quilogramas, utilizando a equivalência de 1 libra = 0,453592 kg.
+
+**Altura (cm)**: variável quantitativa contínua, obtida pela conversão de decímetros para centímetros, considerando 1 dm = 10 cm.
+
+A seguir, apresenta-se um gráfico de dispersão que ilustra o comportamento conjunto das variáveis Altura (cm) e Peso (kg), bem como uma tabela resumo dos teste de hipótese aplicado:
+
+```{r}
+#| label: fig-AlturaxPeso
+#| fig-cap: "Gráfico de dispersão entre Peso e Altura dos clientes"
+
+ANALISE_2
+```
+
+::: {#tbl-PesoxAltura layout-align="center" tbl-pos="H"}
+```{=latex}
+\begin{table}[!h]
+\centering
+\begin{tabular}{lcrr}
+\toprule
+Teste & Variável & p-valor & Decisão \\
+\midrule
+Spearman & Peso × Altura & 0,000000 & Rejeita H0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+```
+:::
+
+Observa-se, pela $\ref{fig-AlturaxPeso}$, uma relação positiva clara entre as variáveis, evidenciando que, de forma geral, à medida que o peso aumenta, a altura também tende a aumentar. Essa tendência linear crescente é confirmada pelos resultados do teste de correlação de Spearman apresentados na [@tbl-PesoxAltura], o qual revelou uma correlação positiva significativa (ρ = 0,6865; p - Valor \< 0,000001).
+
+Esses resultados indicam a existência de uma associação estatisticamente relevante entre peso e altura, sugerindo que indivíduos com maior peso tendem, em média, a apresentar maior estatura. A análise conjunta — visual e estatística — reforça a consistência dessa relação nas amostras observadas.
+
+## Distribuição das Idades dos Clientes por Loja — Âmbar Seco
+
+Nesta análise, busca-se compreender a distribuição das idades dos clientes nas quatro lojas da cidade de Âmbar Seco: Ferraria Seca, Saloon, Banco Careca e Vendinha Rápida. O objetivo é identificar padrões etários entre os consumidores, avaliando se há diferenças significativas no perfil de idade dos clientes que frequentam cada estabelecimento.
+
+Foram utilizadas as seguintes variáveis:
+
+**Idade**: variável quantitativa contínua, representando a idade dos clientes (em anos).
+
+**Loja**: variável qualitativa nominal, correspondente ao nome da loja na qual a venda foi registrada.
+
+Abaixo, é apresentado o gráfico boxplot que demonstra a dispersão das idades em cada loja:
+
+```{r}
+#| label: fig-IDADE_LOJA
+#| fig-cap: "Distribuição das Idades dos Clientes por Loja - Âmbar Seco  "
+GRAFICO_3
+
+
+```
+
+::: {#tbl-IDADECLIENTES layout-align="center" tbl-pos="H"}
+```{=latex}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+NameStore & Média & Mediana & Desvio\_Padrão & Q1 & Q3 & Mínimo & Máximo & n\\
+\midrule
+Vendinha Rápida & 40,34513 & 41,0 & 6,032309 & 35 & 46 & 30 & 49 & 113\\
+Banco Careca & 34,92391 & 34,0 & 5,573157 & 31 & 40 & 25 & 44 & 92\\
+Saloon & 34,19608 & 32,5 & 12,697579 & 26 & 38 & 15 & 77 & 102\\
+Ferraria Seca & 33,66667 & 30,5 & 13,310806 & 24 & 39 & 16 & 80 & 108\\
+\bottomrule
+\end{tabular}
+```
+:::
+
+A Figura $\ref{fig-IDADE_LOJA}$, complementada pela **Tabela 3**, apresenta a distribuição das idades dos clientes em cada loja da cidade de **Âmbar Seco**.
+
+De forma geral, nota-se que as idades médias variam entre aproximadamente **33,7** e **40,3** anos, indicando que o público das lojas é predominantemente **adulto**. A **Vendinha Rápida** se destaca com a maior média e mediana (40,3 e 41 anos, respectivamente), além de baixa dispersão (desvio-padrão ≈ 6,0). Isso sugere um público mais **homogêneo** e ligeiramente mais velho.
+
+O **Banco Careca** apresenta média (34,9) e mediana (34) muito próximas, com pequena variabilidade (desvio-padrão ≈ 5,6), indicando um perfil etário equilibrado e consistente — majoritariamente composto por adultos jovens.
+
+Em contraste, as **lojas Ferraria Seca** e **Saloon** exibem as maiores dispersões (desvios-padrão ≈ 13,3 e 12,7, respectivamente) e amplitudes interquartis mais largas (Q1–Q3 variando de 24 a 39 e 26 a 38). Essa característica, aliada à presença de outliers no gráfico, evidencia que atendem tanto a clientes jovens quanto a faixas etárias mais elevadas, refletindo maior diversidade de público.
+
+Por fim, observa-se que, em todas as lojas, média e mediana permanecem próximas, indicando distribuições aproximadamente simétricas. Ainda assim, os valores máximos registrados (até 80 anos em algumas lojas) reforçam a presença de clientes idosos ocasionais.
+
+Em síntese, a análise conjunta da Figura $\ref{fig-IDADE_LOJA}$ e da **Tabela 3** revela diferenças sutis, mas relevantes, no perfil etário dos consumidores de Âmbar Seco. Enquanto **Vendinha Rápida** atrai um público mais maduro e homogêneo, **Ferraria Seca** e **Saloon** destacam-se pela maior heterogeneidade etária, e o **Banco Careca** mantém um perfil centrado em jovens adultos.
+
+## Top 3 produtos mais vendidos nas top 3 lojas com maior receita em 1889:
+
+Nesta análise, busca-se identificar os produtos mais vendidos nas três lojas com maior faturamento no ano de 1889: **Ferraria Apache**, Loja **Ouro Fino** e Loja **TendTudo**. O objetivo é compreender o comportamento das vendas por produto dentro de cada estabelecimento e avaliar a relação entre o volume de vendas e o desempenho financeiro das lojas.
+
+Foram consideradas as seguintes variáveis:
+
+**Produto**: variável qualitativa nominal, representando o item comercializado. **Quantidade Vendida**: variável quantitativa discreta, correspondendo ao número de unidades vendidas de cada produto. **Loja**: variável qualitativa nominal, identificando o estabelecimento responsável pela venda.
+
+Abaixo, apresenta-se o gráfico de barras que mostra as 3 lojas com maiores faturamentos e os 3 produtos mais vendidos em cada loja no ano de 1889:
+
+```{r}
+#| label: fig-TOPLOJAS
+#| fig-cap: "Gráfico de barras do faturamento das 3 melhores lojas no ano de 1889"
+
+LOJAS_3
+```
+
+```{r}
+#| label: fig-TOPPRODUTOS
+#| fig-cap: "Top 3 Produtos Mais Vendidos em Cada Loja (Ano 1889)"
+
+PRODUTO_3
+```
+
+A Figura $\ref{fig-TOPPRODUTOS}$, complementada pela Figura $\ref{fig-TOPLOJAS}$, evidencia que, embora o volume de vendas varie entre os produtos e lojas, há padrões claros de preferência dos consumidores e eficiência de comercialização.
+
+A Loja **Ouro Fino** obteve o maior faturamento anual (US$ 37 159), seguida de perto pela Loja TendTudo (US$ 36 976), enquanto a Ferraria Apache registrou US$ 34 216. Essa diferença relativamente pequena entre as receitas demonstra uma concorrência equilibrada, mas com particularidades em cada portfólio de produtos.
+
+Na **Ferraria Apache**, o destaque foi o Chapéu de Couro, com 52 unidades vendidas, seguido pela Espingarda (42) e o Machado (41).
+
+Na Loja **Ouro Fino**, os itens de maior saída foram Botas de Couro (52), Whisky (49) e Chapéu de Couro (45). 
+
+Já a Loja **TendTudo** lidera em volume individual com a Espingarda (53), seguida pelo Whisky (49) e pela Colt .45 (43). 
+
+De forma geral, observa-se que **Whisky** e **Espingarda** aparecem entre os mais vendidos em mais de uma loja, o que indica preferência generalizada por esses produtos no mercado de 1889.
+
+Em síntese, as Figuras $\ref{fig-TOPPRODUTOS}$ e $\ref{fig-TOPLOJAS}$ demonstram que as estratégias de vendas diferenciadas das três lojas resultaram em faturamentos semelhantes, mas com perfis de consumo específicos. Enquanto a Loja **Ouro Fino** lidera em receita, a Loja **TendTudo** se destaca pelo maior volume de vendas unitárias, e a **Ferraria Apache** mantém desempenho consistente com foco em produtos de utilidade prática.
+
+## Conclusão
+
+As análises desenvolvidas para o cliente **João Sábio**, proprietário da **Old Town Road Ltda.**, permitiram compreender de forma ampla o desempenho comercial das lojas e o perfil dos consumidores na região.
+
+De maneira geral, os resultados indicaram que:
+
+A **receita média** das lojas apresentou variações ao longo do período de 1880 a 1889, sugerindo oscilações no desempenho econômico local. Essa análise temporal forneceu uma visão clara sobre o comportamento financeiro do comércio, permitindo identificar anos de maior e menor faturamento.
+
+A **relação entre peso e altura dos clientes** evidenciou um padrão coerente com a literatura estatística, reforçando a existência de associação entre essas variáveis. A aplicação do nível de significância de 5% possibilitou fundamentar essa relação com rigor estatístico.
+
+A **análise da idade dos clientes por loja na região Âmbar Seco** mostrou diferenças marcantes entre os públicos atendidos. Algumas lojas concentram-se em clientes adultos jovens, enquanto outras apresentam um público mais maduro.
+
+Por fim, a identificação dos **três produtos mais vendidos nas 3 lojas com maior faturamento** destacou os itens de maior impacto nas receitas, revelando o papel de produtos estratégicos como Chapéu de Couro, Espingarda e Whisky na composição do faturamento total.
+

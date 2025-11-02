@@ -65,5 +65,23 @@ Dados_analise_3 <- DF %>%
   ) +
   theme_minimal()
   
+ TABELA_RESUMO_IDADE <- Dados_analise_3 %>%
+   group_by(NameStore) %>%
+   summarise(
+     Média = mean(IDADE, na.rm = TRUE),
+     Mediana = median(IDADE, na.rm = TRUE),
+     Desvio_Padrão = sd(IDADE, na.rm = TRUE),
+     Q1 = quantile(IDADE, 0.25, na.rm = TRUE),
+     Q3 = quantile(IDADE, 0.75, na.rm = TRUE),
+     Mínimo = min(IDADE, na.rm = TRUE),
+     Máximo = max(IDADE, na.rm = TRUE),
+     n = n()
+   ) %>%
+   arrange(desc(Média))
+kable(
+   TABELA_RESUMO_IDADE,
+   format = "latex",
+   booktabs = TRUE
+ ) 
 
  

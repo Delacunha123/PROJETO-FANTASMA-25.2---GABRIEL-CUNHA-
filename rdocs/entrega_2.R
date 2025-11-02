@@ -46,9 +46,13 @@ INFO_CLIENTES <- read_excel("~/GitHub/PROJETO-FANTASMA-25.2---GABRIEL-CUNHA-/rel
 
 TABELA_CLIENTES_DESATUALIZADAS <- INFO_CLIENTES %>% mutate(ALTURA_CM = Height_dm * 10,PESO_KG = Weight_lbs / 2.20462)
 
-TABELA_CLIENTES <- TABELA_CLIENTES_DESATUALIZADAS %>% select(`CLIENTE` = Cli3ntID, 
-                                                             `PESO_EM_KG` = PESO_KG,
-                                                             `ALTURA_EM_CM`  = ALTURA_CM)
+TABELA_CLIENTES <- TABELA_CLIENTES_DESATUALIZADAS %>%
+  select(
+    `CLIENTE` = Cli3ntID,
+    `PESO_EM_KG` = PESO_KG,
+    `ALTURA_EM_CM` = ALTURA_CM
+  ) %>%
+  distinct(`CLIENTE`, .keep_all = TRUE)
 
 ANALISE_2 <- ggplot(TABELA_CLIENTES) +
   aes(x = PESO_EM_KG, y = ALTURA_EM_CM) +
