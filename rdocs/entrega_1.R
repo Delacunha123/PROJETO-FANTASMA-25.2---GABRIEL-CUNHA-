@@ -96,9 +96,14 @@ library(kableExtra)
 #GERAR TABELA EM LATEX
 FATURAMENTO_MÉDIO_POR_ANO %>%
   kable(
-    col.names = c("Ano", "Faturamento Médio (R$)"),
-    align = c("c", "r"),      # ok
+    col.names = c("\\textbf{Ano}", "\\textbf{Faturamento Médio (R\\$)}"),
+    align = c("c", "r"),
     format = "latex",
+    booktabs = TRUE,
+    caption = "Faturamento médio por ano nas lojas",
+    escape = FALSE                     # permite comandos LaTeX como \textbf{}
   ) %>%
-  kable_styling(latex_options = c("hold_position"))
-
+  kable_styling(
+    latex_options = c("hold_position"),
+    font_size = 11
+  )

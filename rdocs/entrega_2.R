@@ -27,6 +27,10 @@ library(dplyr)
 library(readxl)
 library(lubridate)
 library(ggplot2)
+library(tibble)
+library(stringr)
+library(kableExtra)
+
 
 theme_estat <- function(...) {
   theme <- ggplot2::theme_bw() +
@@ -56,7 +60,7 @@ TABELA_CLIENTES <- TABELA_CLIENTES_DESATUALIZADAS %>%
 
 ANALISE_2 <- ggplot(TABELA_CLIENTES) +
   aes(x = PESO_EM_KG, y = ALTURA_EM_CM) +
-  geom_point(colour = "#A11D21", size = 1) +
+  geom_point(colour = "#A11D21", size = 3, alpha = 0.7) +  # <-- transparência adicionada
   labs(
     x = "Peso (kg)",
     y = "Altura (cm)"
@@ -108,7 +112,95 @@ tabela_testes %>%
     format = "latex",
     booktabs = TRUE,
     align = "lccrrll",
-    col.names = c("Teste", "Variável", "Estatística", "p-valor", "Decisão", "Interpretação")
+    col.names = c("Teste", "Variável", "Estatística", "p-valor", "Decisão", "Interpretação"),
+    caption = "Teste de hipótese de Spearman",
+    label = "tbl-PesoxAltura"
   ) %>%
-  kable_styling(latex_options = c("hold_position"))
+  kable_styling(
+    latex_options = c("hold_position")
+  )
 
+
+
+
+
+
+#MEDIDA RESUMO
+
+print_quadro_resumo <- function(data, var_name, 
+                                title = "Medidas resumo da(o) [nome da variável]", 
+                                label = "quad:quadro_resumo1") {
+  # Pacotes necessários
+  require(dplyr)
+  require(stringr)
+  require(tibble)
+  
+  # Captura o nome da variável
+  var_name <- substitute(var_name)
+  
+  # Calcula as medidas resumo
+  data <- data %>%
+    summarize(
+      `Média` = round(mean(!!sym(var_name), na.rm = TRUE), 2),
+      `Desvio Padrão` = round(sd(!!sym(var_name), na.rm = TRUE), 2),
+      `Variância` = round(var(!!sym(var_name), na.rm = TRUE), 2),
+      `Mínimo` = round(min(!!sym(var_name), na.rm = TRUE), 2),
+      `1o Quartil` = round(quantile(!!sym(var_name), probs = .25, na.rm = TRUE), 2),
+      `Mediana` = round(quantile(!!sym(var_name), probs = .5, na.rm = TRUE), 2),
+      `3o Quartil` = round(quantile(!!sym(var_name), probs = .75, na.rm = TRUE), 2),
+      `Máximo` = round(max(!!sym(var_name), na.rm = TRUE), 2)
+    ) %>%
+    t() %>%
+    as.data.frame() %>%
+    tibble::rownames_to_column("Estatística")
+  
+  # Início do LaTeX
+  latex <- stringr::str_c(
+    "\\begin{quadro}[H]\n",
+    "\t\\caption{", title, "}\n",
+    "\t\\centering\n",
+    "\t\\begin{adjustbox}{max width=\\textwidth}\n",
+    "\t\\begin{tabular}{| l | S[table-format = 6.2] |}\n",
+    "\t\\toprule\n",
+    "\t\\textbf{Estatística} & \\textbf{Valor} \\\\\n",
+    "\t\\midrule\n"
+  )
+  
+  # Corpo da tabela
+  for (i in seq_len(nrow(data))) {
+    latex <- stringr::str_c(
+      latex,
+      "\t", data$Estatística[i], " & ", data[i, 2], " \\\\\n"
+    )
+  }
+  
+  # Fechamento
+  latex <- stringr::str_c(
+    latex,
+    "\t\\bottomrule\n",
+    "\t\\end{tabular}\n",
+    "\t\\label{", label, "}\n",
+    "\t\\end{adjustbox}\n",
+    "\\end{quadro}"
+  )
+  
+  # Exibe o resultado
+  writeLines(latex)
+}
+
+
+# Quadro resumo para PESO
+#print_quadro_resumo(
+ # data = TABELA_CLIENTES,
+  #var_name = PESO_EM_KG,
+  #title = "Medidas resumo da variável Peso (kg)",
+  #label = "quad:quadro_resumo_peso"
+#)
+
+# Quadro resumo para ALTURA
+#print_quadro_resumo(
+ # data = TABELA_CLIENTES,
+  #var_name = ALTURA_EM_CM,
+  #title = "Medidas resumo da variável Altura (cm)",
+  #label = "quad:quadro_resumo_altura"
+#)

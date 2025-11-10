@@ -40,7 +40,7 @@ crossref:
       reference-prefix: Teste
       caption-prefix: Quadro
       caption-location: top
-
+    
 
 execute: 
   message: false

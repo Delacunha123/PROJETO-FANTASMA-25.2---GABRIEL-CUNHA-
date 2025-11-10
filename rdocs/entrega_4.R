@@ -26,7 +26,26 @@ source("rdocs/source/packages.R")
 library(dplyr)
 library(readxl)
 library(lubridate)
+library(stringr)
+library(forcats)
 library(ggplot2)
+
+
+
+theme_estat <- function(...) {
+  theme <- ggplot2::theme_bw() +
+    ggplot2::theme(
+      axis.title.y = ggplot2::element_text(colour = "black", size = 12),
+      axis.title.x = ggplot2::element_text(colour = "black", size = 12),
+      axis.text = ggplot2::element_text(colour = "black", size = 9.5),
+      panel.border = ggplot2::element_blank(),
+      axis.line = ggplot2::element_line(colour = "black"),
+      legend.position = "top",
+      ...
+    )
+  return(theme)
+}
+
 
 RELATORIO_VENDAS <- read_excel("C:/Users/gabic/OneDrive/Documentos/relatorio_old_town_road.xlsx",sheet = "relatorio_vendas")
 INFO_PROD <- read_excel("C:/Users/gabic/OneDrive/Documentos/relatorio_old_town_road.xlsx",sheet = "infos_produtos")
@@ -41,7 +60,7 @@ DF <- RELATORIO_VENDAS %>%
 
 
 #SELECIONAR AS VARIÁVEIS QUE EU QUERO TRABALHAR
-Dados_analise_1 <- DF %>%
+Dados_analise_4 <- DF %>%
   select(
     `CHAVE DA VENDA` = SaleID,
     `DATA`           = Date,
@@ -53,7 +72,7 @@ Dados_analise_1 <- DF %>%
   )
 
 #ADICIONAR O ANO DE VENDA E VER FATURAMENTO TOTAL DE CADA ANO E CADA LOJA
-FATURAMENTO_ANUAL_por_loja_ano <- Dados_analise_1 %>%
+FATURAMENTO_ANUAL_por_loja_ano <- Dados_analise_4 %>%
   mutate(ANO = year(as.Date(DATA))) %>%
   group_by(`CHAVE DA LOJA`, ANO) %>%
   mutate(
@@ -77,55 +96,68 @@ cores_personalizadas <- c("#A11D21", "#003366", "#CC9900")
 # Folga no eixo (com base no valor máximo)
 LOJAS_3 <- ggplot(TOP_3, aes(x = reorder(NameStore, -Faturamento_anual), y = Faturamento_anual, fill = NameStore)) + geom_bar(stat = "identity", width = 0.6, color = "black") + scale_fill_manual(values = cores_personalizadas) + geom_text(aes(label = round(Faturamento_anual, 0)), vjust = -0.5, size = 3) + labs(x = "Loja", y = "Faturamento Anual (US$)") + theme_minimal(base_size = 13) + theme( plot.title = element_text(hjust = 0.5, face = "bold"), legend.position = "none", axis.text.x = element_text(angle = 15, hjust = 1) )
 #VENDO TOP 3 PRODUTOS MAIS VENDIDOS:
-dados_filtrados <- Dados_analise_1 %>%
+
+# Se suas colunas têm espaços, renomeie para facilitar (opcional, mas ajuda muito):
+dados_filtrados <- Dados_analise_4 %>%
+  rename(
+    CHAVE_DA_LOJA      = `CHAVE DA LOJA`,
+    NOME_DO_PRODUTO    = `NOME DO PRODUTO`,
+    QUANTIDADE_VENDIDA = `QUANTIDADE VENDIDA`
+  )
+
+# cria a coluna do nome a partir da chave
+dados_filtrados2 <- dados_filtrados %>%
   mutate(
-    ANO = year(as.Date(DATA)),
-    NOME_DA_LOJA = case_when(
-      `CHAVE DA LOJA` == 7  ~ "Loja Ouro Fino",
-      `CHAVE DA LOJA` == 5  ~ "Loja TendTudo",
-      `CHAVE DA LOJA` == 17 ~ "Ferraria Apache",
-      TRUE ~ as.character(`CHAVE DA LOJA`)
+    NOME_DA_LOJA = dplyr::recode(
+      CHAVE_DA_LOJA,
+      `5`  = "Loja TendTudo",
+      `7`  = "Loja Ouro Fino",
+      `17` = "Ferraria Apache",
+      .default = NA_character_
     )
   ) %>%
-  filter(
-    ANO == 1889,
-    `CHAVE DA LOJA` %in% c(7, 5, 17)
+  mutate(ANO = year(as.Date(DATA))) %>%
+  filter(CHAVE_DA_LOJA %in% c(5, 7, 17))
+# 1) Base 1889
+base_1889 <- dados_filtrados2 %>% filter(ANO == 1889)
+
+# 2) Top 3 produtos no ano (somando quantidade vendida)
+top3_prod <- base_1889 %>%
+  group_by(NOME_DO_PRODUTO) %>%
+  summarise(freq = sum(QUANTIDADE_VENDIDA, na.rm = TRUE), .groups = "drop") %>%
+  slice_max(freq, n = 3, with_ties = FALSE) %>%
+  pull(NOME_DO_PRODUTO)
+
+# 3) “trans_drv” no seu padrão: Produto × Loja
+trans_drv <- base_1889 %>%
+  filter(NOME_DO_PRODUTO %in% top3_prod) %>%
+  group_by(NOME_DO_PRODUTO, NOME_DA_LOJA) %>%
+  summarise(freq = sum(QUANTIDADE_VENDIDA, na.rm = TRUE), .groups = "drop") %>%
+  group_by(NOME_DO_PRODUTO) %>%
+  mutate(freq_relativa = round(freq / sum(freq) * 100, 1)) %>%
+  ungroup() %>%
+  mutate(
+    trans = NOME_DO_PRODUTO,
+    drv   = NOME_DA_LOJA
   )
 
-top3_produtos_lojas <- dados_filtrados %>%
-  group_by(NOME_DA_LOJA, `NOME DO PRODUTO`) %>%
-  summarise(Total_Vendido = sum(`QUANTIDADE VENDIDA`, na.rm = TRUE)) %>%
-  arrange(NOME_DA_LOJA, desc(Total_Vendido)) %>%
-  group_by(NOME_DA_LOJA) %>%
-  slice_head(n = 3)
-cores_personalizadas <- c("#A11D21", "#003366", "#CC9900")
+# rótulos "qtd (xx,x%)"
+porcentagens <- stringr::str_c(trans_drv$freq_relativa, "%") %>%
+  stringr::str_replace("\\.", ",")
+legendas <- stringr::str_squish(stringr::str_c(trans_drv$freq, " (", porcentagens, ")"))
 
-
-PRODUTO_3 <- ggplot(top3_produtos_lojas,
-                     aes(x = reorder(`NOME DO PRODUTO`, -Total_Vendido),
-                         y = Total_Vendido,
-                         fill = NOME_DA_LOJA)) +
-  geom_bar(stat = "identity", position = "dodge", width = 0.7, color = "black") +
-  scale_fill_manual(values = cores_personalizadas) +
-  geom_text(aes(label = Total_Vendido),
-            vjust = -0.2, size = 3, fontface = "bold") +
-  facet_wrap(~NOME_DA_LOJA, scales = "free_x") +
-  labs(
-    x = "Produto",
-    y = "Quantidade Vendida",
-    fill = "Loja"
+# 4) Gráfico
+g <- ggplot(trans_drv) +
+  aes(
+    x = fct_reorder(trans, trans_drv$freq, .fun = sum, .desc = TRUE),
+    y = freq, fill = drv, label = legendas
   ) +
-  theme_minimal(base_size = 15) +
-  theme(
-    plot.title = element_text( face = "bold", size = 17),
-    strip.text = element_text(size = 10, face = "bold"),  
-    axis.text.x = element_text(angle = 25, hjust = 1, size = 8, face = "bold"),
-    axis.text.y = element_text(size = 10),
-    axis.title.x = element_text(size = 10, face = "bold"),
-    axis.title.y = element_text(size = 10, face = "bold"),
-    legend.title = element_text(size = 10, face = "bold"),
-    legend.text = element_text(size = 10),
-    panel.grid.minor = element_blank()
-  )
+  geom_col(position = position_dodge2(preserve = "single", padding = 0)) +
+  geom_text(position = position_dodge(width = .9), vjust = -0.5, hjust = 0.5, size = 3) +
+  scale_fill_manual(values = cores_personalizadas)+
+  labs(
+    x = "Produto", y = "Quantidade vendida", fill = "Loja"
+  ) +
+  theme_estat()
 
 

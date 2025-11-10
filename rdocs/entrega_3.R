@@ -64,24 +64,83 @@ Dados_analise_3 <- DF %>%
     y = "Idade dos Clientes",
   ) +
   theme_minimal()
-  
- TABELA_RESUMO_IDADE <- Dados_analise_3 %>%
-   group_by(NameStore) %>%
-   summarise(
-     Média = mean(IDADE, na.rm = TRUE),
-     Mediana = median(IDADE, na.rm = TRUE),
-     Desvio_Padrão = sd(IDADE, na.rm = TRUE),
-     Q1 = quantile(IDADE, 0.25, na.rm = TRUE),
-     Q3 = quantile(IDADE, 0.75, na.rm = TRUE),
-     Mínimo = min(IDADE, na.rm = TRUE),
-     Máximo = max(IDADE, na.rm = TRUE),
-     n = n()
-   ) %>%
-   arrange(desc(Média))
-kable(
-   TABELA_RESUMO_IDADE,
-   format = "latex",
-   booktabs = TRUE
- ) 
 
+ 
+   
+ print_quadro_resumo <- function(data, var_name, 
+                                 title = "Medidas resumo da(o) [nome da variável]", 
+                                 label = "quad:quadro_resumo1") {
+   # Pacotes necessários
+   require(dplyr)
+   require(stringr)
+   require(tibble)
+   
+   # Captura o nome da variável
+   var_name <- substitute(var_name)
+   
+   # Calcula as medidas resumo
+   data <- data %>%
+     summarize(
+       `Média` = round(mean(!!sym(var_name), na.rm = TRUE), 2),
+       `Desvio Padrão` = round(sd(!!sym(var_name), na.rm = TRUE), 2),
+       `Variância` = round(var(!!sym(var_name), na.rm = TRUE), 2),
+       `Mínimo` = round(min(!!sym(var_name), na.rm = TRUE), 2),
+       `1o Quartil` = round(quantile(!!sym(var_name), probs = .25, na.rm = TRUE), 2),
+       `Mediana` = round(quantile(!!sym(var_name), probs = .5, na.rm = TRUE), 2),
+       `3o Quartil` = round(quantile(!!sym(var_name), probs = .75, na.rm = TRUE), 2),
+       `Máximo` = round(max(!!sym(var_name), na.rm = TRUE), 2)
+     ) %>%
+     t() %>%
+     as.data.frame() %>%
+     tibble::rownames_to_column("Estatística")
+   
+   # Início do LaTeX
+   latex <- stringr::str_c(
+     "\\begin{quadro}[H]\n",
+     "\t\\caption{", title, "}\n",
+     "\t\\centering\n",
+     "\t\\begin{adjustbox}{max width=\\textwidth}\n",
+     "\t\\begin{tabular}{| l | S[table-format = 6.2] |}\n",
+     "\t\\toprule\n",
+     "\t\\textbf{Estatística} & \\textbf{Valor} \\\\\n",
+     "\t\\midrule\n"
+   )
+   
+   # Corpo da tabela
+   for (i in seq_len(nrow(data))) {
+     latex <- stringr::str_c(
+       latex,
+       "\t", data$Estatística[i], " & ", data[i, 2], " \\\\\n"
+     )
+   }
+   
+   # Fechamento
+   latex <- stringr::str_c(
+     latex,
+     "\t\\bottomrule\n",
+     "\t\\end{tabular}\n",
+     "\t\\label{", label, "}\n",
+     "\t\\end{adjustbox}\n",
+     "\\end{quadro}"
+   )
+   
+   # Exibe o resultado
+   writeLines(latex)
+ }
+ 
+ library(dplyr)
+ library(purrr)
+ 
+# Dados_analise_3 %>%
+ #  group_by(NameStore) %>%
+  # group_split() %>%                                # lista de data.frames por loja
+   #iwalk(~ print_quadro_resumo(
+    # data     = .x,
+     #var_name = "IDADE",
+     #title    = paste0("Medidas resumo da variável Idade — Loja: ", unique(.x$NameStore)),
+     #label    = paste0("quad:idade_", gsub("\\s+","_", tolower(unique(.x$NameStore))))
+   #))
+ 
+ 
+  
  
